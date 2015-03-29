@@ -27,7 +27,7 @@ Multiplayer WebGL Game
 ## usage
 
 1. Fork the [tanx client](https://playcanvas.com/project/45093/overview/tanx) project.
-2. Run the game from designer with `?server=local` argument so it connects to `http://localhost:30043/socet`.
+2. Run the game from designer with `?server=local` argument so it connects to `http://localhost:30043/socket`.
 3. Play your fork!
 
 ## changelog
