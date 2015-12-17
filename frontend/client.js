@@ -1,5 +1,5 @@
 pc.script.create('client', function (context) {
-    
+
     var tmpVec = new pc.Vec3();
     var uri = new pc.URI(window.location.href);
     var query = uri.getQuery();
@@ -10,10 +10,10 @@ pc.script.create('client', function (context) {
         this.id = null;
         this.movement = [ 0, 0 ];
         context.keyboard = new pc.input.Keyboard(document.body);
-        
+
         document.body.style.cursor = 'none';
     };
-    
+
     var getParameterByName = function(name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -28,10 +28,10 @@ pc.script.create('client', function (context) {
             this.pickables = context.root.getChildren()[0].script.pickables;
             this.teams = context.root.getChildren()[0].script.teams;
             this.profile = context.root.getChildren()[0].script.profile;
-            
+
             var self = this;
             var servers = {
-                'local': 'http://localhost:30043/socket', // local
+                'local': 'http://localhost:51000/socket', // local
                 'us': 'http://54.67.22.188:30043/socket', // us
                 'default': 'https://tanx.playcanvas.com/socket' // load balanced
             };
@@ -40,59 +40,59 @@ pc.script.create('client', function (context) {
             var url = env && servers[env] || servers['default'];
 
             var socket = this.socket = new Socket({ url: url });
-            
+
             this.connected = false;
-            
+
             socket.on('error', function(err) {
                 console.log(err);
             });
-            
+
             socket.on('init', function(data) {
                 self.id = data.id;
                 self.connected = true;
-                
+
                 users.on(self.id + ':name', function(name) {
                     self.profile.set(name);
                 });
             });
-            
+
             users.bind(socket);
-            
+
             socket.on('tank.new', function(data) {
                 self.tanks.new(data);
             });
-            
+
             socket.on('tank.delete', function(data) {
                 self.tanks.delete(data);
             });
-            
+
             var dataQueue = [ ];
-            
+
             socket.on('update', function(data) {
                 // bullets add
                 if (data.bullets) {
                     for(var i = 0; i < data.bullets.length; i++)
                         self.bullets.new(data.bullets[i]);
                 }
-                
+
                 // bullets delete
                 if (data.bulletsDelete) {
                     for(var i = 0; i < data.bulletsDelete.length; i++)
                         self.bullets.finish(data.bulletsDelete[i]);
                 }
-                
+
                 // pickables add
                 if (data.pickable) {
                     for(var i = 0; i < data.pickable.length; i++)
                         self.pickables.new(data.pickable[i]);
                 }
-                
+
                 // pickable delete
                 if (data.pickableDelete) {
                     for(var i = 0; i < data.pickableDelete.length; i++)
                         self.pickables.finish(data.pickableDelete[i]);
                 }
-                
+
                 // tanks update
                 if (data.tanks)
                     self.tanks.updateData(data.tanks);
@@ -102,14 +102,14 @@ pc.script.create('client', function (context) {
                     for(var i = 0; i < data.tanksRespawn.length; i++)
                         self.tanks.respawn(data.tanksRespawn[i]);
                 }
-                
+
                 // teams score
                 if (data.teams) {
                     for(var i = 0; i < data.teams.length; i++) {
                         self.teams.teamScore(i, data.teams[i]);
                     }
                 }
-                
+
                 // winner
                 if (data.winner) {
                     self.shoot(false);
@@ -119,17 +119,17 @@ pc.script.create('client', function (context) {
 
             context.mouse.on('mousedown', this.onMouseDown, this);
             context.mouse.on('mouseup', this.onMouseUp, this);
-            
+
             this.gamepadConnected = false;
             this.gamepadActive = false;
-            
+
             window.addEventListener('gamepadconnected', function () {
                 this.gamepadConnected = true;
             }.bind(this));
             window.addEventListener('gamepaddisconnected', function () {
                 this.gamepadConnected = false;
             }.bind(this));
-            
+
             // Chrome doesn't have the gamepad events, and we can't
             // feature detect them in Firefox unfortunately.
             if ('chrome' in window) {
@@ -141,17 +141,17 @@ pc.script.create('client', function (context) {
         update: function (dt) {
             if (! this.connected)
                 return;
-                
+
             // WASD movement
             var movement = [
                 context.keyboard.isPressed(pc.input.KEY_D) - context.keyboard.isPressed(pc.input.KEY_A),
                 context.keyboard.isPressed(pc.input.KEY_S) - context.keyboard.isPressed(pc.input.KEY_W)
             ];
-            
+
             // ARROWs movement
             movement[0] += context.keyboard.isPressed(pc.input.KEY_RIGHT) - context.keyboard.isPressed(pc.input.KEY_LEFT);
             movement[1] += context.keyboard.isPressed(pc.input.KEY_DOWN) - context.keyboard.isPressed(pc.input.KEY_UP);
-            
+
             // gamepad controls
             // AUTHORS: Potch and cvan
             if (context.gamepads.gamepadsSupported && this.gamepadConnected) {
@@ -209,34 +209,34 @@ pc.script.create('client', function (context) {
                     }
                 }
             }
-            
+
             // rotate vector
             var t =       movement[0] * Math.sin(Math.PI * 0.75) - movement[1] * Math.cos(Math.PI * 0.75);
             movement[1] = movement[1] * Math.sin(Math.PI * 0.75) + movement[0] * Math.cos(Math.PI * 0.75);
             movement[0] = t;
-            
+
             // check if it is changed
             if (movement[0] !== this.movement[0] || movement[1] != this.movement[1]) {
                 this.movement = movement;
                 this.socket.send('move', this.movement);
             }
         },
-        
+
         onMouseDown: function() {
             this.shoot(true);
         },
-        
+
         onMouseUp: function() {
             this.shoot(false);
         },
-        
+
         shoot: function(state) {
             if (! this.connected)
                 return;
-                
+
             if (this.shootingState !== state) {
                 this.shootingState = state;
-                
+
                 this.socket.send('shoot', this.shootingState);
             }
         }

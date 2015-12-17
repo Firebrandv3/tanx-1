@@ -26,21 +26,14 @@ Pickable.prototype.delete = function() {
     this.pos.delete();
 };
 
-
-Object.defineProperty(
-    Pickable.prototype,
-    'data', {
-        get: function() {
-            return {
-                id: this.id,
-                t: this.type,
-                r: parseFloat(this.radius.toFixed(2), 10),
-                x: parseFloat(this.pos[0].toFixed(2), 10),
-                y: parseFloat(this.pos[1].toFixed(2), 10)
-            };
-        }
-    }
-);
-
+Pickable.prototype.toJSON = function() {
+  return {
+    id: this.id,
+    t: this.type,
+    r: parseFloat(this.radius.toFixed(2), 10),
+    x: parseFloat(this.pos[0].toFixed(2), 10),
+    y: parseFloat(this.pos[1].toFixed(2), 10)
+  };
+}
 
 module.exports = Pickable;

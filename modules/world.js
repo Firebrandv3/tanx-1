@@ -29,13 +29,11 @@ World.prototype.forEach = function(cluster, fn) {
     this.clusters[cluster].forEach(fn);
 };
 
-
 World.prototype.add = function(cluster, item) {
     this.length++;
     item.world = this;
     this.clusters[cluster].add(item);
 };
-
 
 World.prototype.remove = function(cluster, item) {
     if (this.clusters[cluster].remove(item)) {
@@ -44,13 +42,11 @@ World.prototype.remove = function(cluster, item) {
     }
 };
 
-
 World.prototype.update = function() {
     for (var key in this.clusters) {
         this.clusters[key].update();
     }
 };
-
 
 World.prototype.forEachAround = function(cluster, point, range, fn) {
     if (typeof(range) == 'function') {
@@ -61,5 +57,11 @@ World.prototype.forEachAround = function(cluster, point, range, fn) {
     this.clusters[cluster].forEachAround(point, range, fn);
 };
 
+World.prototype.toJSON = function() {
+  return {
+    tanks: this.clusters['tank'].nodes,
+    pickables: this.clusters['pickable'].nodes,
+  }
+};
 
 module.exports = World;

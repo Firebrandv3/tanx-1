@@ -1,10 +1,10 @@
 function Socket(args) {
     pc.extend(this, pc.events);
-    
+
     this._connected = false;
-    
+
     this.socket = new SockJS(args.url);
-    
+
     this.socket.onopen = this._onopen.bind(this);
     this.socket.onclose = this._onclose.bind(this);
     this.socket.onmessage = this._onmessage.bind(this);

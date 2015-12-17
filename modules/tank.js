@@ -5,16 +5,17 @@ var Bullet = require('./bullet');
 var tankIds = 0;
 
 
-function Tank(client) {
+function Tank(client, team) {
+    this.team = team
+    this.team.tanks++
+
     this.deleted = false;
 
     this.id = ++tankIds;
     this.owner = client;
-    client.tank = this;
     // this.hue = Math.floor(Math.random() * 360);
     this.radius = .75;
 
-    this.scoreLast = 0;
     this.score = 0;
 
     this.pos = Vec2.new(0, 0);
@@ -110,25 +111,21 @@ Tank.prototype.update = function() {
     }
 };
 
-
-Object.defineProperty(
-    Tank.prototype,
-    'data', {
-        get: function() {
-            return {
-                id: this.id,
-                team: this.team.id,
-                owner: this.owner.id,
-                pos: [ parseFloat(this.pos[0].toFixed(3), 10), parseFloat(this.pos[1].toFixed(3), 10) ],
-                angle: Math.floor(this.angle),
-                hp: this.hp,
-                shield: this.shield,
-                dead: this.dead,
-                score: this.score
-            };
-        },
-        set: function() { }
-    }
-);
+Tank.prototype.toJSON = function() {
+  return {
+    clientName: this.client.name || 'guest',
+    clientId: this.client.id,
+    id: this.id,
+    team: this.team.id,
+    owner: this.owner.id,
+    pos: [ parseFloat(this.pos[0].toFixed(3), 10), parseFloat(this.pos[1].toFixed(3), 10) ],
+    angle: Math.floor(this.angle),
+    hp: this.hp,
+    shield: this.shield,
+    dead: this.dead,
+    killer: this.killer,
+    score: this.score
+  };
+}
 
 module.exports = Tank;
