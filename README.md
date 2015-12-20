@@ -12,12 +12,14 @@ server.
 - Added [`State`](modules/state.js) class to handle synchronized room state.
 - Added `toJSON` method on `bulled`, `pickable`, `world` and `tank` to expose
   state to the clients.
+- [View room handler](rooms/battle_room.js)
 
 **What has been changed in the client?**
 
 - Removed `users.js` (used to manage user-related events)
 - Removed specific game event handling (`init`, `tank.new`, `tank.delete`, `user.add`, `user.sync`, `user.remove`, `user.name`)
 - Modified `update` event to handle Colyseus room patched state
+- [View client](frontend/client.js#L44-L118)
 
 ## Related links
 
