@@ -21,11 +21,16 @@ server.
 
 ## Related links
 
-- [Colyseus Server](https://github.com/gamestdio/colyseus)
-- [Colyseus JavaScript Client](https://github.com/gamestdio/colyseus.js)
-- [forked tanx project](https://playcanvas.com/project/367035/)
+**Tanx**
+
+- [forked tanx project](https://playcanvas.com/project/367035/overview/tanxcolyseus)
 - [original tanx game](http://playcanv.as/p/aP0oxhUr)
 - [original tanx server](https://github.com/Maksims/tanx)
+
+**Colyseus**
+
+- [Colyseus Server](https://github.com/gamestdio/colyseus)
+- [Colyseus JavaScript Client](https://github.com/gamestdio/colyseus.js)
 
 ## License
 
