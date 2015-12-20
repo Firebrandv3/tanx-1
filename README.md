@@ -10,7 +10,7 @@ server.
 - Lobby and room creation were removed.
 - Messages to ensure sync state were removed.
 - Added [`State`](modules/state.js) class to handle synchronized room state.
-- Added `toJSON` method on `bulled`, `pickable`, `world` and `tank` to expose
+- Added `toJSON` method on `state`, `bulled`, `pickable`, and `tank` to expose
   state to the clients.
 - [View room handler](rooms/battle_room.js)
 
