@@ -33,8 +33,8 @@ pc.script.create('client', function (context) {
             var protocol = location.protocol.replace("http", "ws")
             var servers = {
                 'local': protocol + '//localhost:51000', // local
-                'us': protocol + '//54.67.22.188:30043/socket', // us
-                'default': protocol + '//tanx.playcanvas.com/socket' // load balanced
+                'us': protocol + '//colyseus-tanx.herokuapp.com', // us
+                'default': protocol + '//colyseus-tanx.herokuapp.com' //
             };
 
             var env = getParameterByName('server') || 'default';
