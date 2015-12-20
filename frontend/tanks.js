@@ -74,9 +74,12 @@ pc.script.create('tanks', function (context) {
 
           } else if (property == "killer") {
             var killerEntity = this.tanks.findByName('tank_' + value);
-            var killerTank = killerEntity.script.tank
 
-            tank.killer = killerTank;
+            // when the game is finished killer entity may not exists due re-initialization
+            if (killerEntity) {
+              var killerTank = killerEntity.script.tank
+              tank.killer = killerTank;
+            }
 
           } else if (property == "dead") {
             tank.setDead(value);
