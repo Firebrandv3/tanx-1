@@ -34,6 +34,7 @@ pc.script.create('client', function (context) {
             var servers = {
                 'local': protocol + '//localhost:51000', // local
                 'us': protocol + '//colyseus-tanx.herokuapp.com', // us
+                'uk': protocol + '//colyseus-tanx-europe.herokuapp.com', // uk
                 'default': protocol + '//colyseus-tanx.herokuapp.com' //
             };
 
