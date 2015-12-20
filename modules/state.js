@@ -1,8 +1,7 @@
-class GameState {
+class State {
 
   constructor (world) {
     this.world = world
-
     this.score = 0
 
     this.winner = {
@@ -26,7 +25,6 @@ class GameState {
     // tanks scores
     this.world.forEach('tank', (tank) => {
       tank.score = 0;
-      tank.scoreLast = -1;
       tank.killer = null;
       tank.respawn();
     });
@@ -35,6 +33,28 @@ class GameState {
     this.score = 0;
   }
 
+  toJSON () {
+    var pickables = {}
+    this.world.forEach('pickable', (item) => pickables[item.id] = item )
+
+    var tanks = {}
+    this.world.forEach('tank', (item) => tanks[item.id] = item )
+
+    var bullets = {}
+    this.world.forEach('bullet', (item) => bullets[item.id] = item )
+
+    return {
+      score: this.score,
+      winner: this.winner,
+      teams: this.teams,
+
+      // world state
+      pickables: pickables,
+      tanks: tanks,
+      bullets: bullets
+    }
+  }
+
 }
 
-module.exports = GameState
+module.exports = State

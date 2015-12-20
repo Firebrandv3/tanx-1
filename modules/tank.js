@@ -4,8 +4,9 @@ var Bullet = require('./bullet');
 
 var tankIds = 0;
 
-
 function Tank(client, team) {
+    this.client = client
+
     this.team = team
     this.team.tanks++
 
@@ -118,7 +119,8 @@ Tank.prototype.toJSON = function() {
     id: this.id,
     team: this.team.id,
     owner: this.owner.id,
-    pos: [ parseFloat(this.pos[0].toFixed(3), 10), parseFloat(this.pos[1].toFixed(3), 10) ],
+    x: parseFloat(this.pos[0].toFixed(3), 10),
+    y: parseFloat(this.pos[1].toFixed(3), 10),
     angle: Math.floor(this.angle),
     hp: this.hp,
     shield: this.shield,

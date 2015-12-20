@@ -2,7 +2,7 @@ pc.script.create('overlay', function (app) {
     var Overlay = function (entity) {
         this.entity = entity;
         var self = this;
-    
+
         var css = [
             // cinematic
             ".cinematic-top,",
@@ -267,17 +267,17 @@ pc.script.create('overlay', function (app) {
             "   }",
             "}",
         ].join('\n');
-        
+
         var style = document.createElement('style');
         style.innerHTML = css;
         document.querySelector('head').appendChild(style);
-        
+
         // overlay
         var overlay = this.elOverlay = document.createElement('div');
         overlay.classList.add('active');
         overlay.id = 'overlay';
         document.body.appendChild(overlay);
-        
+
         // logo
         var logo = this.elLogo = new Image();
         logo.classList.add('logo', 'active');
@@ -288,9 +288,9 @@ pc.script.create('overlay', function (app) {
         var cinematicTop = this.elCinematicTop = document.createElement('div');
         cinematicTop.classList.add('cinematic-top', 'active');
         document.body.appendChild(cinematicTop);
-        
+
         this.elLogoSmall = document.getElementById('logo');
-        
+
         // powered by
         var powered = this.elPowered = document.createElement('a');
         powered.id = 'powered';
@@ -301,7 +301,7 @@ pc.script.create('overlay', function (app) {
             window.open(this.href);
         }, false);
         overlay.appendChild(powered);
-        
+
         // powered by img
         var img = new Image();
         img.src = 'https://s3-eu-west-1.amazonaws.com/static.playcanvas.com/tanx/powered.png';
@@ -311,23 +311,23 @@ pc.script.create('overlay', function (app) {
         var cinematicBottom = this.elCinematicBottom = document.createElement('div');
         cinematicBottom.classList.add('cinematic-bottom', 'active');
         document.body.appendChild(cinematicBottom);
-        
+
         // winner
         var winner = this.elWinner = document.createElement('div');
         winner.classList.add('winner');
         overlay.appendChild(winner);
-        
+
         // winner icon
         var winnerIcon = this.elWinnerIcon = document.createElement('div');
         winnerIcon.classList.add('icon');
         winner.appendChild(winnerIcon);
-        
+
         // winner message
         var winnerText = document.createElement('div');
         winnerText.classList.add('text');
         winnerText.textContent = 'winner';
         winner.appendChild(winnerText);
-        
+
         // winner team
         var winnerTeam = this.elWinnerTeam = document.createElement('div');
         winnerTeam.classList.add('team');
@@ -338,43 +338,43 @@ pc.script.create('overlay', function (app) {
         var killer = this.elKiller = document.createElement('div');
         killer.classList.add('killer');
         overlay.appendChild(killer);
-        
+
         // killer icon
         var killerIcon = this.elKillerIcon = document.createElement('div');
         killerIcon.classList.add('icon');
         killer.appendChild(killerIcon);
-        
+
         // killer name
         var killerBy = document.createElement('div');
         killerBy.classList.add('by');
         killerBy.textContent = 'killed by';
         killer.appendChild(killerBy);
-        
+
         // killer name
         var killerName = this.elKillerName = document.createElement('div');
         killerName.classList.add('name');
         killer.appendChild(killerName);
-        
+
         // killer timer
         var timer = this.elTimer = document.createElement('div');
         timer.id = 'timer';
         overlay.appendChild(timer);
-        
+
         // username
         var username = this.elUsername = document.createElement('div');
         username.id = 'usernamePopup';
         username.innerHTML = "<input id='usernameInput' type='text' value='guest'><div id='usernameCancel'>Cancel</div><div id='usernameOk'>OK</div>";
         document.body.appendChild(username);
-        
+
         this.elUsernameInput = document.getElementById('usernameInput');
         this.elUsernameInput.addEventListener('keydown', function(evt) {
             if (evt.keyCode === 13)
                 document.getElementById('usernameOk').click();
-                
+
             if (evt.keyCode === 27)
                 document.getElementById('usernameCancel').click();
         }, false);
-        
+
         document.getElementById('usernameOk').addEventListener('click', function() {
             self.username(true);
             self.elUsernameInput.blur();
@@ -391,18 +391,18 @@ pc.script.create('overlay', function (app) {
             self.username(false);
             self.elUsernameInput.blur();
         });
-        
+
         this.usernameFn = null;
 
         this.timerStart = 0;
         this.timerElapse = 1;
         this.timerSecond = 0;
-        
+
         this.imagesStore = 'https://s3-eu-west-1.amazonaws.com/static.playcanvas.com/tanx/';
-        
+
         this.volume = .5;
         this.volumeTarget = .5;
-        
+
         var self = this;
         setTimeout(function() {
             var audio = self.audio = new Audio('https://s3-eu-west-1.amazonaws.com/static.playcanvas.com/tanx/music.mp3');
@@ -411,7 +411,7 @@ pc.script.create('overlay', function (app) {
             audio.loop = true;
             audio.volume = self.volume;
             audio.play();
-            
+
             var evtPlay = function() {
                 audio.play();
                 window.removeEventListener('touchstart', evtPlay);
@@ -424,12 +424,12 @@ pc.script.create('overlay', function (app) {
         initialize: function () {
             this.touch = app.root.getChildren()[0].script.touch;
             this.minimap = app.root.getChildren()[0].script.minimap;
-            
+
             this.overlay(.2);
             this.cinematic(true);
             this.timer(5);
         },
-        
+
         update: function() {
             if (this.timerStart) {
                 var s = this.timerElapse - Math.round((Date.now() - this.timerStart) / 1000);
@@ -443,13 +443,13 @@ pc.script.create('overlay', function (app) {
                     this.elTimer.classList.remove('active');
                 }
             }
-            
+
             if (this.audio && this.volume !== this.volumeTarget) {
                 this.volume += (this.volumeTarget - this.volume) * .1;
-                
+
                 if (Math.abs(this.volume - this.volumeTarget) < 0.01)
                     this.volume = this.volumeTarget;
-                    
+
                 this.audio.volume = this.volume;
             }
         },
@@ -474,7 +474,7 @@ pc.script.create('overlay', function (app) {
                 this.timer(false);
             }
         },
-        
+
         cinematic: function(state) {
             if (state) {
                 this.elCinematicTop.classList.add('active');
@@ -484,18 +484,18 @@ pc.script.create('overlay', function (app) {
                 this.elCinematicBottom.classList.remove('active');
             }
         },
-        
+
         username: function(text, fn) {
             if (text === true) {
                 this.elUsername.classList.remove('active');
                 if (this.usernameFn)
                     this.usernameFn(this.elUsernameInput.value);
-                    
+
             } else if (text) {
                 this.usernameFn = fn;
                 this.elUsername.classList.add('active');
                 this.elUsernameInput.value = text;
-                
+
                 var self = this;
                 setTimeout(function() {
                     self.elUsernameInput.focus();
@@ -503,12 +503,12 @@ pc.script.create('overlay', function (app) {
                 }, 200);
             } else {
                 this.elUsername.classList.remove('active');
-                
+
                 if (this.usernameFn)
                     this.usernameFn();
             }
         },
-        
+
         winner: function(team) {
             if (! team) {
                 this.elWinner.classList.remove('active');
@@ -519,7 +519,7 @@ pc.script.create('overlay', function (app) {
                 this.elWinner.classList.add('active');
             }
         },
-        
+
         timer: function(elapse) {
             if (elapse) {
                 this.timerStart = Date.now();
@@ -531,7 +531,7 @@ pc.script.create('overlay', function (app) {
                 this.elTimer.classList.remove('active');
             }
         },
-        
+
         killer: function(name, color) {
             if (! name || this.elWinner.classList.contains('active')) {
                 this.timerStart = null;
@@ -543,7 +543,7 @@ pc.script.create('overlay', function (app) {
                 this.elKiller.classList.add('active');
             }
         },
-        
+
 
     };
 

@@ -57,11 +57,4 @@ World.prototype.forEachAround = function(cluster, point, range, fn) {
     this.clusters[cluster].forEachAround(point, range, fn);
 };
 
-World.prototype.toJSON = function() {
-  return {
-    tanks: this.clusters['tank'].nodes,
-    pickables: this.clusters['pickable'].nodes,
-  }
-};
-
 module.exports = World;

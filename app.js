@@ -16,7 +16,7 @@ var BattleRoom = require('./rooms/battle_room');
 // register battle room handler
 gameServer.register('battle', BattleRoom)
 
-var port = parseInt(process.env.TANX_PORT || '51000', 10) || 30043;
+var port = parseInt(process.env.TANX_PORT || process.env.PORT || '51000', 10) || 30043;
 var host = process.env.TANX_HOST || '0.0.0.0';
 
 app.use(express.static( __dirname ))

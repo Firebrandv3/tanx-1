@@ -5,7 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "clock-timer.js": "^1.0.0",
-    "colyseus": "^0.2.0",
+    "colyseus": "^0.2.6",
     "express": "^4.13.3",
     "node-uuid": "^1.4.2"
   },

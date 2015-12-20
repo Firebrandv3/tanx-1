@@ -4,6 +4,7 @@ pc.script.create('tanks', function (context) {
         this.ind = 0;
     };
 
+
     Tanks.prototype = {
         initialize: function () {
             this.tank = context.root.findByName('tank');
@@ -25,12 +26,20 @@ pc.script.create('tanks', function (context) {
             newTank.setName('tank_' + args.id);
             newTank.owner = args.owner;
             newTank.enabled = true;
-            newTank.setPosition(args.pos[0], 0, args.pos[1]);
+            newTank.setPosition(args.x, 0, args.y);
             newTank.rotate(0, Math.random() * 360, 0);
+
+            // set inital data
+            newTank.script.tank.setHP(args.hp)
+            newTank.script.tank.setSP(args.shield);
+            newTank.script.tank.setDead(args.dead);
+            newTank.script.tank.setName(args.clientName)
+            newTank.script.tank.moveTo([args.x, args.y])
+            newTank.script.tank.targeting(args.angle)
 
             this.teams.tankAdd(newTank.script.tank, args.team);
 
-            if (args.owner == this.client.id) {
+            if (args.owner == this.client.colyseus.id) {
                 this.camera.script.link.link = newTank;
                 this.own = newTank;
             }
@@ -38,50 +47,82 @@ pc.script.create('tanks', function (context) {
             this.tanks.addChild(newTank);
         },
 
-        delete: function(args) {
-            var tank = this.tanks.findByName('tank_' + args.id);
+        delete: function(id) {
+            var tank = this.tanks.findByName('tank_' + id);
             if (! tank) return;
 
             tank.fire('destroy');
             tank.destroy();
         },
 
-        updateData: function(data) {
-            for(var i = 0; i < data.length; i++) {
-                var tankData = data[i];
+        updateProperty: function(id, property, value) {
+          var entity = this.tanks.findByName('tank_' + id);
+          var tank = entity.script.tank
 
-                var tank = this.tanks.findByName('tank_' + tankData.id);
-                if (! tank) continue;
-                tank = tank.script.tank;
+          if (!tank.dead && (property == "x" || property == "y")) {
+            if (property === 'y') property = 'z'
+            tank.movePoint[property] = value
 
-                // movement
-                if (tankData.hasOwnProperty('x'))
-                    tank.moveTo([ tankData.x, tankData.y ]);
+          } else if (!tank.own && property == "angle") {
+            tank.targeting(value)
 
-                // targeting
-                if (! tank.own && tankData.hasOwnProperty('a'))
-                    tank.targeting(tankData.a);
+          } else if (property == "hp") {
+            tank.setHP(value)
 
-                // hp
-                if (tankData.hasOwnProperty('hp'))
-                    tank.setHP(tankData.hp);
+          } else if (property == "shield") {
+            tank.setSP(value || 0);
 
-                // shield
-                tank.setSP(tankData.sp || 0);
+          } else if (property == "killer") {
+            var killerEntity = this.tanks.findByName('tank_' + value);
+            var killerTank = killerEntity.script.tank
 
-                // killer
-                if (tank.own && tankData.hasOwnProperty('killer')) {
-                    // find killer
-                    tank.killer = this.tanks.findByName('tank_' + tankData.killer);
-                }
+            tank.killer = killerTank;
 
-                // dead/alive
-                tank.setDead(tankData.dead || false);
+          } else if (property == "dead") {
+            tank.setDead(value);
 
-                // score
-                // if (tank.own && tankData.hasOwnProperty('s'))
-                    // this.hpBar.setScore(tankData.s);
-            }
+          } else if (property == "clientName") {
+            tank.setName(value)
+          }
+
+        },
+
+        updateData: function(index, path, value) {
+            // for(var i = 0; i < data.length; i++) {
+            //     var tankData = data[i];
+            //
+            //     var tank = this.tanks.findByName('tank_' + tankData.id);
+            //     if (! tank) continue;
+            //     tank = tank.script.tank;
+            //
+            //     // movement
+            //     if (tankData.hasOwnProperty('x'))
+            //         tank.moveTo([ tankData.x, tankData.y ]);
+            //
+            //     // targeting
+            //     if (! tank.own && tankData.hasOwnProperty('a'))
+            //         tank.targeting(tankData.a);
+            //
+            //     // hp
+            //     if (tankData.hasOwnProperty('hp'))
+            //         tank.setHP(tankData.hp);
+            //
+            //     // shield
+            //     tank.setSP(tankData.sp || 0);
+            //
+            //     // killer
+            //     if (tank.own && tankData.hasOwnProperty('killer')) {
+            //         // find killer
+            //         tank.killer = this.tanks.findByName('tank_' + tankData.killer);
+            //     }
+            //
+            //     // dead/alive
+            //     tank.setDead(tankData.dead || false);
+            //
+            //     // score
+            //     // if (tank.own && tankData.hasOwnProperty('s'))
+            //         // this.hpBar.setScore(tankData.s);
+            // }
 
             this.minimap.draw();
         }

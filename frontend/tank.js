@@ -135,11 +135,7 @@ pc.script.create('tank', function (context) {
 
             // name
             var name = this.name = document.createElement('div');
-            var user = users.get(this.entity.owner);
-            this.name.textContent = (user && user.name) || 'guest';
-            users.on(this.entity.owner + ':name', function(text) {
-                name.textContent = text;
-            });
+            this.name.textContent = this.clientName || 'guest';
             document.getElementById('names').appendChild(this.name);
             this.nameVec = new pc.Vec3();
 
@@ -199,7 +195,7 @@ pc.script.create('tank', function (context) {
             this.deadBefore = true;
             this.flashState = false;
 
-            if (context.root.getChildren()[0].script.client.id === this.entity.owner) {
+            if (context.root.getChildren()[0].script.client.colyseus.id === this.entity.owner) {
                 this.own = true;
                 // this.uiHP = context.root.getChildren()[0].script.hp;
                 this.overlay = context.root.getChildren()[0].script.overlay;
@@ -248,8 +244,7 @@ pc.script.create('tank', function (context) {
                         window.navigator.vibrate(100 + Math.floor(Math.random() * 100));
 
                     // killer
-                    var killerUser = this.killer && users.get(this.killer.owner);
-                    var name = (killerUser && killerUser.name) || 'guest';
+                    var name = (this.killer && this.killer.clientName) || 'guest';
                     this.overlay.killer(name, this.teams.names[this.killer && this.killer.script && this.killer.script.tank.team]);
                     // cinematic
                     this.overlay.cinematic(true);
@@ -374,8 +369,9 @@ pc.script.create('tank', function (context) {
             this.sp = sp;
         },
 
-        setName: function(canvas) {
-            // this.name.model.material.emissiveMap.setSource(canvas);
+        setName: function(name) {
+          this.clientName = name
+          this.name.textContent = name
         },
 
         setDead: function(dead) {

@@ -1,5 +1,4 @@
 var Room = require('colyseus').Room;
-var Loop = require('../modules/loop');
 var World = require('../modules/world');
 var Block = require('../modules/block');
 var Tank = require('../modules/tank');
@@ -147,10 +146,17 @@ class BattleRoom extends Room {
       }));
     }
 
-    this.setState(new State(world))
+    this.updateInterval = setInterval(this.update.bind(this), 1000 / 20)
+    this.setState(new State(this.world))
+  }
+
+  requestJoin (options) {
+    return ( this.clients.length < 12 )
   }
 
   onJoin (client, options) {
+    this.sendState(client)
+
     var tank = new Tank(client, this.pickWeakestTeam());
     client.tank = tank;
 
@@ -160,8 +166,9 @@ class BattleRoom extends Room {
   onMessage (client, data) {
     var type = data[0]
       , message = data[1]
+      , tank = client.tank
 
-    if (type === 'user.name') {
+    if (type === 'name') {
       if (/^([a-z0-9\-_]){4,8}$/i.test(message)) {
         client.name = message
       }
@@ -180,7 +187,9 @@ class BattleRoom extends Room {
         tank.angle = message;
 
     } else if (type === 'shoot') {
-      tank.shooting = message;
+      if (!tank.dead) {
+        tank.shooting = message;
+      }
 
     }
   }
@@ -342,7 +351,7 @@ class BattleRoom extends Room {
                             bullet.owner.score++;
                             bullet.owner.team.score++;
                             // winner?
-                            if (bullet.owner.team.score === 32)
+                            if (bullet.owner.team.score === 10)
                                 winner = bullet.owner.team;
                             // total score
                             this.state.score++;
@@ -399,8 +408,6 @@ class BattleRoom extends Room {
 
         this.state.reset()
     }
-
-    super.update()
   }
 
   onLeave (client) {
@@ -431,6 +438,10 @@ class BattleRoom extends Room {
 
     // pick random
     return list[Math.floor(list.length * Math.random())];
+  }
+
+  dispose () {
+    clearInterval(this.updateInterval)
   }
 
 }

@@ -108,7 +108,7 @@ pc.script.create('link', function (context) {
                 this.lastSend = Date.now();
                 this.lastAngle = this.angle;
 
-                this.client.socket.send('target', this.angle);
+                this.client.room.send(['target', this.angle]);
             }
         },
 
