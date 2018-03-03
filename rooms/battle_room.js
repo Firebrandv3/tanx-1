@@ -9,8 +9,8 @@ var State = require('../modules/state');
 
 class BattleRoom extends Room {
 
-  constructor (options) {
-    super(options)
+  onInit (options) {
+    this.maxClients = 12;
 
     this.world = new World({
       width: 48,
@@ -146,17 +146,12 @@ class BattleRoom extends Room {
       }));
     }
 
-    this.updateInterval = setInterval(this.update.bind(this), 1000 / 20)
-    this.setState(new State(this.world))
-  }
+    this.setSimulationInterval(() => this.update(), 1000 / 20);
 
-  requestJoin (options) {
-    return ( this.clients.length < 12 )
+    this.setState(new State(this.world));
   }
 
   onJoin (client, options) {
-    this.sendState(client)
-
     var tank = new Tank(client, this.pickWeakestTeam());
     client.tank = tank;
 
@@ -438,10 +433,6 @@ class BattleRoom extends Room {
 
     // pick random
     return list[Math.floor(list.length * Math.random())];
-  }
-
-  dispose () {
-    clearInterval(this.updateInterval)
   }
 
 }

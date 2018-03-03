@@ -118,7 +118,7 @@ Tank.prototype.toJSON = function() {
     clientId: this.client.id,
     id: this.id,
     team: this.team.id,
-    owner: this.owner.id,
+    owner: this.owner.sessionId,
     x: parseFloat(this.pos[0].toFixed(3), 10),
     y: parseFloat(this.pos[1].toFixed(3), 10),
     angle: Math.floor(this.angle),

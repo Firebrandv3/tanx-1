@@ -195,7 +195,7 @@ pc.script.create('tank', function (context) {
             this.deadBefore = true;
             this.flashState = false;
 
-            if (context.root.getChildren()[0].script.client.colyseus.id === this.entity.owner) {
+            if (context.root.getChildren()[0].script.client.room.sessionId === this.entity.owner) {
                 this.own = true;
                 // this.uiHP = context.root.getChildren()[0].script.hp;
                 this.overlay = context.root.getChildren()[0].script.overlay;

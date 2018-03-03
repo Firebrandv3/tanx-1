@@ -39,7 +39,7 @@ pc.script.create('tanks', function (context) {
 
             this.teams.tankAdd(newTank.script.tank, args.team);
 
-            if (args.owner == this.client.colyseus.id) {
+            if (args.owner == this.client.room.sessionId) {
                 this.camera.script.link.link = newTank;
                 this.own = newTank;
             }
